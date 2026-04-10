@@ -1,83 +1,230 @@
-# Привет, меня зовут Кирилл!
+# SQL Практика (QA)
+
+## Описание
+
+В этом репозитории собраны SQL-запросы, выполненные в рамках обучения тестированию.
+Использовал SQL для работы с данными, проверки корректности информации и анализа связей между таблицами.
+
+Основные задачи:
+
+* выборка и фильтрация данных
+* проверка бизнес-логики
+* анализ связей между таблицами
+
+База данных: `qa_shop`
 
 ---
 
-### 👨‍💻 Обо мне:
+## Схема БД
 
-Я начинающий тестировщик. Прошел курс по тестированию, на котором освоил работу с тестовой документацией, программы по работе с кодом, тестировал веб и мобильные приложения. Дополнительно прошёл 3-х месячную стажировку в A1QA. 
+### users
 
-- 📫 Как связаться со мной:  [![Gmail Badge](https://img.shields.io/badge/-Gmail-red?style=flat&logo=Gmail&logoColor=white)](mailto:kirilltalkmuch@gmail.com) [![Telegram](https://img.shields.io/badge/Telegram-blue?logo=telegram)](https://t.me/KerilJan)
+```sql
+user_id (smallint)
+login (varchar)
+password (varchar)
+token (varchar)
+```
 
----
+### orders
 
-<!-- ### 🤝 Социальные сети:
+```sql
+order_id (smallint)
+user_id (smallint)
+status (varchar)
+payment_date (datetime)
+delivery_date (datetime)
+total (decimal)
+```
 
-  <div id="badges">
-    <a href="#" target="_blank">
-      <img src="#" width="40" height="40" alt="VKontakte" />
-    </a>
-  </div> -->
+### products
 
----
-
-### 📁 Тестовая документация:
-
-<div>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg" title="jira" alt="jira" width="40" height="40"/>&nbsp
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/YouTrack_Icon.svg/1024px-YouTrack_Icon.svg.png?20200803082248" title="youtrack" alt="youtrack" width="40" height="40"/>&nbsp
-  <img src="https://codahosted.io/packs/21236/unversioned/assets/LOGO/ba1091c59bab89cd2fd0f289622731fe16113d7b00905abe64759c313a4b73b76c1b0426076ed76cb74752234c734131df46992d5b8b48fc13e264240e4f7119f736cfeb64df36ded54b5cbf6198b9cadedf18dd0cac5c7dbcd16e6336c29363cd1292ba" title="testrail" alt="tetstrail" width="40" height="40"/>&nbsp
-  <img src="https://docs.testit.software/images/testit_logo_icon.png" title="test-it" alt="test-it" width="40" height="40"/>&nbsp
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" title="figma" alt="figma" width="40" height="40"/>&nbsp
-</div>
-
----
-
-### 🛠 Тестирование веб-приложений:
-
-<div>
-  <img src="https://d33wubrfki0l68.cloudfront.net/38b5c953a4667366685d55db55d057c86db1fc54/a0fdc/static/acae6b24d940347661ca901ea07f47c1/chrome-dev-logo-icon.png" title="devtools" alt="devtools" width="40" height="40"/>&nbsp
-  <img src="https://seeklogo.com/images/P/postman-logo-0087CA0D15-seeklogo.com.png" title="postman" alt="postman" width="40" height="40"/>&nbsp
-  <img src="https://static0.smartbear.co/smartbearbrand/media/images/home/soapui-icon.svg" title="soapui" alt="soapui" width="40" height="40"/>&nbsp
-</div>
+```sql
+product_id (smallint)
+name (varchar)
+description (text)
+price (decimal)
+category (varchar)
+manufacturer (varchar)
+imageUrl (varchar)
+freeShipping (tinyint)
+```
 
 ---
 
-### 📱 Тестирование мобильных приложений:
 
-<div>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/androidstudio/androidstudio-original.svg" title="android-studio" alt="android-studio" width="40" height="40"/>&nbsp
-  <img src="https://cdn.icon-icons.com/icons2/3053/PNG/512/charles_proxy_macos_bigsur_icon_190302.png" title="charles-proxy" alt="charles-proxy" width="40" height="40"/>&nbsp
-  <img src="https://www.megaleechers.com/storage/Fiddler-Everywhere-Icon.png" title="fiddler" alt="fiddler" width="40" height="40"/>&nbsp
-  <img src="https://pbs.twimg.com/profile_images/1589614420766126080/slAIVDtr_400x400.jpg" title="proxyman" alt="proxyman" width="40" height="40"/>&nbsp
-</div>
+# SELECT запросы
 
+**Вывести все продукты**
+
+```sql
+SELECT * FROM qa_shop.products;
+```
+
+**Продукты Apple в категории Phones**
+
+```sql
+SELECT * 
+FROM qa_shop.products 
+WHERE manufacturer = 'Apple' AND category = 'Phones';
+```
+
+**Найти продукты, где в названии есть 'sa'**
+
+```sql
+SELECT name, price 
+FROM qa_shop.products 
+WHERE name LIKE '%sa%';
+```
+
+**Продукты с ценой от 100 до 1000**
+
+```sql
+SELECT name, price 
+FROM qa_shop.products 
+WHERE price BETWEEN 100 AND 1000;
+```
+
+**Сумма товаров Samsung**
+
+```sql
+SELECT SUM(price) AS 'SAMSUNG TOTAL PRICE' 
+FROM qa_shop.products 
+WHERE manufacturer = 'Samsung';
+```
+
+**Сортировка по цене (убывание)**
+
+```sql
+SELECT name, price 
+FROM qa_shop.products 
+ORDER BY price DESC;
+```
+
+**Уникальные производители**
+
+```sql
+SELECT DISTINCT manufacturer 
+FROM qa_shop.products;
+```
+
+**Первые 2 уникальные категории**
+
+```sql
+SELECT DISTINCT category 
+FROM qa_shop.products 
+LIMIT 2;
+```
+
+**Названия из 12 символов, начинаются с A**
+
+```sql
+SELECT name 
+FROM qa_shop.products 
+WHERE name LIKE 'A___________';
+```
+
+**Средняя цена продуктов**
+
+```sql
+SELECT AVG(price) AS 'PRODUCTS AVG PRICE' 
+FROM qa_shop.products;
+```
+
+**Продукты Samsung и Huawei**
+
+```sql
+SELECT name, description 
+FROM qa_shop.products 
+WHERE manufacturer IN ('Samsung', 'Huawei');
+```
 
 ---
 
-### 💾 Работа с данными:
 
-<div>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" title="mysql" alt="mysql" width="40" height="40"/>&nbsp
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" title="mongodb" alt="mongodb" width="40" height="40"/>&nbsp
-</div>
+**UNION**
+
+```sql
+SELECT name FROM qa_shop.products
+UNION
+SELECT CAST(order_id AS CHAR) FROM qa_shop.orders;
+```
+
+**GROUP BY + HAVING**
+
+```sql
+SELECT category, COUNT(*) AS product_count 
+FROM qa_shop.products 
+GROUP BY category 
+HAVING COUNT(*) > 15;
+```
+
+**CASE**
+
+```sql
+SELECT 
+  manufacturer,
+  category,
+  price,
+  name,
+  CASE manufacturer
+    WHEN 'Apple' THEN 'Это продукт компании Apple'
+    WHEN 'Samsung' THEN 'Это продукт компании Samsung'
+    WHEN 'Huawei' THEN 'Это продукт компании Huawei'
+    WHEN 'Xiaomi' THEN 'Это продукт компании Xiaomi'
+  END AS 'Company Message'
+FROM qa_shop.products;
+```
 
 ---
 
-### ✏️ Работа с кодом:
+# JOIN запросы
 
-<div>
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" title="git" alt="git" width="40" height="40"/>&nbsp
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Bash_Logo_Colored.svg/1024px-Bash_Logo_Colored.svg.png?20180723054350" title="bash" alt="bash" width="40" height="40"/>&nbsp
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" title="vscode" alt="vscode" width="40" height="40"/>&nbsp
-  
-</div>
+**Пользователь и его заказы**
 
----
+```sql
+SELECT u.login, o.order_id, o.total
+FROM users u
+JOIN orders o ON u.user_id = o.user_id
+WHERE u.user_id = 6;
+```
 
-<!-- ### 💻 Пройденные курсы:
+**Заказы, товары и количество**
 
-| Курсы                                                           | Дата              |
-| ----------------------------------------------------------------| :---------------: |
-|                          |  |
+```sql
+SELECT oi.order_id, p.name, oi.quantity
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id;
+```
 
---- -->
+**Все пользователи и их заказы (включая тех, у кого нет заказов)**
+
+```sql
+SELECT u.login, o.order_id
+FROM users u
+LEFT JOIN orders o ON u.user_id = o.user_id;
+```
+
+**Оплаченные заказы и товары**
+
+```sql
+SELECT 
+    oip.order_id, 
+    p.name
+FROM order_items_paid oip
+RIGHT JOIN products p ON oip.product_id = p.product_id
+ORDER BY oip.order_id;
+```
+
+**Подзапрос (товары дороже Samsung Active 5)**
+
+```sql
+SELECT name, price
+FROM products
+WHERE price > (
+    SELECT price 
+    FROM products 
+    WHERE name = 'Samsung Active 5'
+);
+```
+
